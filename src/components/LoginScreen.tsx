@@ -82,7 +82,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 id="username"
                 type="text"
                 autoFocus
-                placeholder="e.g., Alex Carter"
+                placeholder="Enter your username"
                 value={username}
                 onChange={(e) => {
                   setUsername(e.target.value);
@@ -114,7 +114,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
           <p className="text-xs text-slate-400 dark:text-slate-500 font-mono">
-            Instant messaging • Persisted history • Socket.io powered
+            Instant messaging • Persisted history
           </p>
         </div>
       </motion.div>
