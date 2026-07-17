@@ -1,12 +1,14 @@
 import express from 'express';
-import 'dotenv/config';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import { db } from './src/server-db.js';
 import { Message } from './src/types.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
@@ -20,7 +22,7 @@ async function startServer() {
     },
   });
 
-  const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+  const PORT = 3000;
 
   // JSON parsing middleware
   app.use(express.json());

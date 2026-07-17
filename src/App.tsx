@@ -13,6 +13,7 @@ export default function App() {
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const socketRef = useRef<Socket | null>(null);
 
@@ -243,7 +244,13 @@ export default function App() {
         )}
 
         {/* Sidebar - Presence List & Profile Controls */}
-        <Sidebar currentUser={username} users={users} onLogout={handleLogout} />
+        <Sidebar
+          currentUser={username}
+          users={users}
+          onLogout={handleLogout}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
 
         {/* Chat workspace view */}
         <ChatArea
@@ -254,6 +261,7 @@ export default function App() {
           onSendMessage={handleSendMessage}
           onTyping={handleTyping}
           onMarkRead={handleMarkRead}
+          onToggleSidebar={() => setIsSidebarOpen(true)}
         />
       </div>
     </div>

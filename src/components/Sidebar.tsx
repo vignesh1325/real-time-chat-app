@@ -1,15 +1,17 @@
 import React from 'react';
 import { User } from '../types.js';
 import { UserAvatar } from './UserAvatar.js';
-import { LogOut, Hash, Users, Circle, MessageSquare } from 'lucide-react';
+import { LogOut, Hash, Users, Circle, MessageSquare, X } from 'lucide-react';
 
 interface SidebarProps {
   currentUser: string;
   users: User[];
   onLogout: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ currentUser, users, onLogout }: SidebarProps) {
+export function Sidebar({ currentUser, users, onLogout, isOpen, onClose }: SidebarProps) {
   // Sort users so online users are at the top, then alphabetically, and exclude current user from general list (or show with a "you" label)
   const sortedUsers = [...users]
     .filter((u) => u && typeof u.username === 'string')
@@ -22,10 +24,21 @@ export function Sidebar({ currentUser, users, onLogout }: SidebarProps) {
   const onlineCount = users.filter((u) => u.status === 'online').length;
 
   return (
-    <aside
-      id="sidebar-container"
-      className="w-full md:w-80 border-r border-slate-100 dark:border-slate-800 bg-[#f8fafc] dark:bg-slate-900 flex flex-col h-full shrink-0 select-none"
-    >
+    <>
+      {/* Backdrop (visible only on mobile/tablet when sidebar is open) */}
+      {isOpen && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 md:hidden transition-opacity duration-300"
+        />
+      )}
+
+      <aside
+        id="sidebar-container"
+        className={`fixed inset-y-0 left-0 z-50 w-72 sm:w-80 border-r border-slate-100 dark:border-slate-800 bg-[#f8fafc] dark:bg-slate-900 flex flex-col h-full shrink-0 select-none transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
       {/* Workspace Header */}
       <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -41,6 +54,17 @@ export function Sidebar({ currentUser, users, onLogout }: SidebarProps) {
             </p>
           </div>
         </div>
+
+        {/* Close Button for mobile devices */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-800/50 transition-colors"
+            title="Close workspace menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Main Sections */}
@@ -143,6 +167,7 @@ export function Sidebar({ currentUser, users, onLogout }: SidebarProps) {
         </button>
       </div>
     </aside>
+    </>
   );
 }
 export default Sidebar;

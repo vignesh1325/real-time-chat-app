@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Message } from '../types.js';
 import { UserAvatar } from './UserAvatar.js';
-import { Send, Hash, Users, Sparkles, Check, CheckCheck } from 'lucide-react';
+import { Send, Hash, Users, Sparkles, Check, CheckCheck, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ChatAreaProps {
@@ -12,6 +12,7 @@ interface ChatAreaProps {
   onSendMessage: (text: string) => void;
   onTyping: (isTyping: boolean) => void;
   onMarkRead: () => void;
+  onToggleSidebar?: () => void;
 }
 
 export function ChatArea({
@@ -22,6 +23,7 @@ export function ChatArea({
   onSendMessage,
   onTyping,
   onMarkRead,
+  onToggleSidebar,
 }: ChatAreaProps) {
   const [inputText, setInputText] = useState('');
   const [isTypingState, setIsTypingState] = useState(false);
@@ -129,20 +131,31 @@ export function ChatArea({
   return (
     <div id="chat-area" className="flex-1 flex flex-col h-full bg-white dark:bg-slate-950 min-w-0">
       {/* Chat Header */}
-      <div className="h-16 px-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between select-none shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-950 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-extrabold text-sm">
+      <div className="h-16 px-4 md:px-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between select-none shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Menu Hamburger Button for mobile */}
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className="md:hidden p-2 -ml-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50 transition-colors shrink-0"
+              title="Open workspace menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+
+          <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-950 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-extrabold text-sm shrink-0">
             #
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-slate-800 dark:text-white leading-tight">general</h2>
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold text-slate-800 dark:text-white leading-tight truncate">general</h2>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
               <span className="text-[9px] text-slate-400 uppercase tracking-widest font-bold">Online</span>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 shrink-0">
           <Users className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
           <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
             {onlineCount} {onlineCount === 1 ? 'user' : 'users'}
@@ -154,7 +167,7 @@ export function ChatArea({
       <div
         ref={scrollContainerRef}
         id="messages-scroll-container"
-        className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-slate-950"
+        className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6 bg-white dark:bg-slate-950"
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-6 select-none">
@@ -243,7 +256,7 @@ export function ChatArea({
       </div>
 
       {/* Typing Indicator Bar */}
-      <div id="typing-indicator-bar" className="px-6 min-h-6 flex items-center shrink-0 bg-white dark:bg-slate-950 select-none pb-2">
+      <div id="typing-indicator-bar" className="px-4 md:px-6 min-h-6 flex items-center shrink-0 bg-white dark:bg-slate-950 select-none pb-2">
         <AnimatePresence>
           {typingUsers.length > 0 && (
             <motion.div
@@ -266,8 +279,8 @@ export function ChatArea({
       </div>
 
       {/* Input Tray */}
-      <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shrink-0">
-        <form onSubmit={handleSubmit} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 max-w-7xl mx-auto">
+      <div className="p-3 md:p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shrink-0">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2 md:gap-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1.5 md:p-2 max-w-7xl mx-auto">
           <input
             ref={inputRef}
             id="message-input"
@@ -275,15 +288,15 @@ export function ChatArea({
             placeholder="Type your message..."
             value={inputText}
             onChange={handleInputChange}
-            className="flex-1 bg-transparent border-none text-sm focus:outline-none focus:ring-0 placeholder-slate-400 text-slate-800 dark:text-white px-2"
+            className="flex-1 bg-transparent border-none text-sm focus:outline-none focus:ring-0 placeholder-slate-400 text-slate-800 dark:text-white px-2 py-1"
           />
           <button
             id="message-send-button"
             type="submit"
             disabled={!inputText.trim()}
-            className="bg-indigo-600 text-white px-5 py-2.5 rounded-md text-xs font-bold uppercase tracking-wider shadow-md hover:bg-indigo-700 disabled:opacity-40 disabled:hover:bg-indigo-600 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+            className="bg-indigo-600 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-md text-xs font-bold uppercase tracking-wider shadow-md hover:bg-indigo-700 disabled:opacity-40 disabled:hover:bg-indigo-600 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
           >
-            <span>Send</span>
+            <span className="hidden sm:inline">Send</span>
             <Send className="w-3.5 h-3.5" />
           </button>
         </form>
